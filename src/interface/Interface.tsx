@@ -68,7 +68,7 @@ const Interface = () => {
         href="https://github.com/michaelkolesidis/cherry-charm"
         target="_blank"
       >
-        <img className="logo" src="./images/logo.png" alt="" />
+        <img className="logo" src="/images/logo.png" alt="" />
       </a>
 
       <div className="interface">
@@ -77,7 +77,7 @@ const Interface = () => {
           <div className="coins-number">
             {authenticated ? parseFloat(monBalance).toFixed(2) : coins}
           </div>
-          <img className="coins-image" src="./images/coin.png" />
+          <img className="coins-image" src="/images/coin.png" />
         </div>
 
         {/* Spins */}
