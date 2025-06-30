@@ -26,6 +26,7 @@ import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import useGame from './stores/store';
 import { useBlockchainGame } from './hooks/useBlockchainGame';
+import { useSoundManager } from './hooks/useSoundManager';
 import Reel from './Reel';
 import Button from './Button';
 
@@ -51,8 +52,22 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   const { 
     spin: blockchainSpin, 
     authenticated, 
-    getSpinCost
+    getSpinCost,
+    isSpinning: blockchainIsSpinning
   } = useBlockchainGame();
+
+  // Sound manager
+  const { 
+    playClick, 
+    playSpin, 
+    playMonReward, 
+    playBadLuck,
+    playWow,
+    playReel, 
+    stopReel,
+    startSpinning,
+    stopSpinning
+  } = useSoundManager();
 
   // Get insufficient funds popup state
   const insufficientFundsPopup = useGame((state) => state.insufficientFundsPopup);
@@ -83,7 +98,19 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
       return;
     }
 
+    if (blockchainIsSpinning) {
+      console.log('❌ Cannot spin: Blockchain is already processing');
+      return;
+    }
+
     console.log('🚀 Starting blockchain spin');
+    
+    // Start spin state (reduces background volume)
+    startSpinning();
+    
+    // Play spin sound and start reel sound
+    playSpin();
+    playReel();
     
     // Lock the game state
     setGameState('spinning');
@@ -97,6 +124,21 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
     
     if (blockchainResult) {
       console.log('🎯 Blockchain result received:', blockchainResult);
+      
+      // Stop reel sound
+      stopReel();
+      
+      // Play outcome sound IMMEDIATELY when we get the result
+      if (Number(blockchainResult.monReward) > 0) {
+        console.log('💰 Playing MON reward sound immediately');
+        playMonReward();
+      } else if (blockchainResult.poppiesNftWon || blockchainResult.rarestPending) {
+        console.log('🎉 Playing wow sound for NFT outcome immediately');
+        playWow();
+      } else {
+        console.log('😔 Playing bad luck sound immediately');
+        playBadLuck();
+      }
       
       // Show popup immediately with blockchain results
       setGameState('waiting-for-popup');
@@ -113,6 +155,8 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
       end();
     } else {
       console.log('❌ No blockchain result - back to idle');
+      stopReel();
+      stopSpinning(); // Stop spin state (restore background volume)
       setGameState('idle');
       end();
     }
@@ -120,7 +164,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === 'Space' && gameState === 'idle' && authenticated && !insufficientFundsPopup) {
+      if (event.code === 'Space' && gameState === 'idle' && authenticated && !insufficientFundsPopup && !blockchainIsSpinning) {
         event.preventDefault();
         spinSlotMachine();
       }
@@ -128,7 +172,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, authenticated, insufficientFundsPopup]);
+  }, [gameState, authenticated, insufficientFundsPopup, blockchainIsSpinning]);
 
   // Reel animation - just for visual effect, doesn't affect outcome
   useFrame(() => {
@@ -138,8 +182,8 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
       const reel = reelRefs[i].current;
       if (!reel) continue;
 
-      // Simple continuous spinning animation
-      reel.rotation.x += 0.3; // Fast spinning for visual effect
+      // ULTRA FAST spinning animation for maximum speed
+      reel.rotation.x += 1.2; // Increased from 0.6 to 1.2 for ultra fast visual effect
     }
   });
 
@@ -147,6 +191,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   useEffect(() => {
     if (gameState === 'waiting-for-popup' && !outcomePopup) {
       console.log('🎰 Popup dismissed - back to idle');
+      stopSpinning(); // Stop spin state (restore background volume)
       setGameState('idle');
     }
   }, [gameState, outcomePopup]);
@@ -215,6 +260,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
         rotation={[-Math.PI / 8, 0, 0]}
         onClick={() => {
           if (canSpin) {
+            playClick();
             spinSlotMachine();
           }
         }}
@@ -239,6 +285,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
         font="./fonts/nickname.otf"
         onPointerDown={() => {
           if (canSpin) {
+            playClick();
             setTextZ(1.3);
             setTextY(-14.1);
           }

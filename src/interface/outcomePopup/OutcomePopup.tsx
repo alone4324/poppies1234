@@ -17,6 +17,7 @@
 import { useEffect } from 'react';
 import useGame from '../../stores/store';
 import { MONAD_TESTNET } from '../../hooks/useBlockchainGame';
+import { useSoundManager } from '../../hooks/useSoundManager';
 import './style.css';
 
 interface OutcomePopupProps {
@@ -30,6 +31,7 @@ interface OutcomePopupProps {
 
 const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rarestPending, txHash }: OutcomePopupProps) => {
   const { setOutcomePopup } = useGame();
+  const { playClick } = useSoundManager();
 
   const explorerUrl = `${MONAD_TESTNET.blockExplorers.default.url}/tx/${txHash}`;
 
@@ -90,6 +92,7 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
 
   const closePopup = () => {
     console.log('🎰 Closing popup manually');
+    playClick();
     setOutcomePopup(null);
   };
 

@@ -14,7 +14,7 @@
  *  https://www.gnu.org/licenses/agpl-3.0.html
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ethers } from 'ethers';
 import useGame from '../stores/store';
@@ -65,14 +65,18 @@ export function useBlockchainGame() {
   const [rewardPool, setRewardPool] = useState<string>('0');
   const [networkError, setNetworkError] = useState<boolean>(false);
 
-  // Gas settings for Monad testnet
+  // Game state management
+  const [isSpinning, setIsSpinning] = useState<boolean>(false);
+  const [lastValidState, setLastValidState] = useState<any>(null);
+
+  // Gas settings for Monad testnet - optimized for speed
   const getDynamicGasSettings = useCallback(async () => {
     if (!provider) {
       console.warn('⚠️ No provider available for gas estimation');
       return {
-        gasLimit: 300000,
-        maxFeePerGas: ethers.parseUnits('50', 'gwei'), // Higher fallback for Monad
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
+        gasLimit: 200000, // Further reduced for ultra speed
+        maxFeePerGas: ethers.parseUnits('150', 'gwei'), // Ultra high for speed
+        maxPriorityFeePerGas: ethers.parseUnits('20', 'gwei') // Ultra high priority
       };
     }
 
@@ -87,31 +91,31 @@ export function useBlockchainGame() {
         maxPriorityFeePerGas: feeData.maxPriorityFeePerGas ? ethers.formatUnits(feeData.maxPriorityFeePerGas, 'gwei') + ' gwei' : 'N/A'
       });
 
-      // Use network fee data with reasonable multipliers for Monad testnet
-      let maxFeePerGas = ethers.parseUnits('50', 'gwei'); // Default for Monad
-      let maxPriorityFeePerGas = ethers.parseUnits('2', 'gwei'); // Default for Monad
+      // Use network fee data with ULTRA AGGRESSIVE multipliers for MAXIMUM SPEED
+      let maxFeePerGas = ethers.parseUnits('150', 'gwei'); // Ultra high default
+      let maxPriorityFeePerGas = ethers.parseUnits('20', 'gwei'); // Ultra high priority
       
       if (feeData.maxFeePerGas) {
-        maxFeePerGas = feeData.maxFeePerGas * 120n / 100n; // 20% buffer
+        maxFeePerGas = feeData.maxFeePerGas * 200n / 100n; // 100% buffer for ultra speed
       }
       if (feeData.maxPriorityFeePerGas) {
-        maxPriorityFeePerGas = feeData.maxPriorityFeePerGas * 120n / 100n; // 20% buffer
+        maxPriorityFeePerGas = feeData.maxPriorityFeePerGas * 300n / 100n; // 200% buffer for ultra priority
       }
 
-      // Ensure minimum values for Monad testnet
-      const minMaxFee = ethers.parseUnits('20', 'gwei');
-      const minPriorityFee = ethers.parseUnits('1', 'gwei');
+      // Ensure minimum values for Monad testnet - ULTRA SPEED
+      const minMaxFee = ethers.parseUnits('100', 'gwei'); // Higher minimum
+      const minPriorityFee = ethers.parseUnits('15', 'gwei'); // Higher minimum priority
       
       if (maxFeePerGas < minMaxFee) maxFeePerGas = minMaxFee;
       if (maxPriorityFeePerGas < minPriorityFee) maxPriorityFeePerGas = minPriorityFee;
 
       const gasSettings = {
-        gasLimit: 300000,
+        gasLimit: 200000, // Ultra reduced gas limit
         maxFeePerGas,
         maxPriorityFeePerGas
       };
 
-      console.log('✅ Using Monad-optimized gas settings:', {
+      console.log('⚡ Using ULTRA SPEED gas settings:', {
         gasLimit: gasSettings.gasLimit,
         maxFeePerGas: ethers.formatUnits(gasSettings.maxFeePerGas, 'gwei') + ' gwei',
         maxPriorityFeePerGas: ethers.formatUnits(gasSettings.maxPriorityFeePerGas, 'gwei') + ' gwei'
@@ -119,12 +123,12 @@ export function useBlockchainGame() {
 
       return gasSettings;
     } catch (error) {
-      console.warn('⚠️ Failed to get dynamic gas settings, using Monad fallback:', error);
+      console.warn('⚠️ Failed to get dynamic gas settings, using ULTRA SPEED fallback:', error);
       
       return {
-        gasLimit: 300000,
-        maxFeePerGas: ethers.parseUnits('50', 'gwei'), // Higher for Monad testnet
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
+        gasLimit: 200000, // Ultra reduced for speed
+        maxFeePerGas: ethers.parseUnits('150', 'gwei'), // Ultra high for speed
+        maxPriorityFeePerGas: ethers.parseUnits('20', 'gwei') // Ultra high priority
       };
     }
   }, [provider]);
@@ -249,7 +253,66 @@ export function useBlockchainGame() {
     fetchState();
   }, [fetchState]);
 
-  // REAL blockchain spin function
+  // Simple transaction sending - no optimistic updates
+  const sendTransaction = useCallback(async (transactionData: any): Promise<string | null> => {
+    if (!signer || !provider) {
+      throw new Error('Signer or provider not ready');
+    }
+
+    try {
+      console.log('📤 Sending transaction...');
+      
+      // Use standard ethers.js transaction sending
+      const tx = await signer.sendTransaction({
+        to: SLOT_MACHINE_ADDRESS,
+        data: transactionData.data,
+        value: transactionData.value,
+        gasLimit: transactionData.gasLimit,
+        maxFeePerGas: transactionData.maxFeePerGas,
+        maxPriorityFeePerGas: transactionData.maxPriorityFeePerGas,
+      });
+
+      console.log('📡 Transaction sent:', tx.hash);
+      return tx.hash;
+      
+    } catch (error: any) {
+      console.error('❌ Transaction failed:', error);
+      
+      // Check for insufficient balance error
+      if (error.code === 'INSUFFICIENT_FUNDS' || error.message?.includes('insufficient balance') || error.message?.includes('Insufficient funds')) {
+        console.error('❌ Insufficient MON balance');
+        console.log('🚨 Triggering insufficient funds popup');
+        setInsufficientFundsPopup(true);
+      }
+      
+      throw error;
+    }
+  }, [signer, provider, setInsufficientFundsPopup]);
+
+  // Wait for transaction confirmation
+  const waitForTransactionConfirmation = useCallback(async (txHash: string): Promise<ethers.TransactionReceipt | null> => {
+    try {
+      console.log('⏳ Waiting for transaction confirmation...');
+      
+      // Create a new provider for waiting (more reliable)
+      const waitProvider = new ethers.JsonRpcProvider(MONAD_TESTNET.rpcUrls.default.http[0]);
+      const receipt = await waitProvider.waitForTransaction(txHash, 1);
+      
+      if (!receipt) {
+        console.error('❌ Transaction receipt is null - transaction may have failed');
+        return null;
+      }
+      
+      console.log('✅ Transaction confirmed:', receipt.hash);
+      return receipt;
+      
+    } catch (error) {
+      console.error('❌ Transaction confirmation failed:', error);
+      return null;
+    }
+  }, []);
+
+  // REAL blockchain spin function - wait for confirmation to get result
   const spin = useCallback(async () => {
     if (!contract || !signer || !provider) {
       console.error('Contract not ready');
@@ -258,6 +321,11 @@ export function useBlockchainGame() {
     
     if (networkError) {
       console.error('Network connection issues');
+      return null;
+    }
+
+    if (isSpinning) {
+      console.log('❌ Already spinning, please wait');
       return null;
     }
     
@@ -273,27 +341,57 @@ export function useBlockchainGame() {
       console.log(`🎰 Starting blockchain spin with cost: ${ethers.formatEther(cost)} MON`);
       console.log(`📊 Current state - Free: ${freeSpins}, Discounted: ${discountedSpins}, HasDiscount: ${hasDiscount}`);
       
+      // Store current state for potential rollback
+      const currentState = {
+        freeSpins,
+        discountedSpins,
+        hasDiscount,
+        monBalance
+      };
+      setLastValidState(currentState);
+      
+      // Set spinning state
+      setIsSpinning(true);
+      
       // Get gas settings
       const gasSettings = await getDynamicGasSettings();
       
-      const txParams = {
+      // Prepare transaction data
+      const spinFunction = contract.interface.encodeFunctionData('spin');
+      
+      const transactionData = {
+        data: spinFunction,
         value: cost,
         ...gasSettings
       };
       
       console.log('📊 Using gas settings:', {
-        gasLimit: txParams.gasLimit.toString(),
-        maxFeePerGas: ethers.formatUnits(txParams.maxFeePerGas, 'gwei') + ' gwei',
-        maxPriorityFeePerGas: ethers.formatUnits(txParams.maxPriorityFeePerGas, 'gwei') + ' gwei'
+        gasLimit: transactionData.gasLimit.toString(),
+        maxFeePerGas: ethers.formatUnits(transactionData.maxFeePerGas, 'gwei') + ' gwei',
+        maxPriorityFeePerGas: ethers.formatUnits(transactionData.maxPriorityFeePerGas, 'gwei') + ' gwei'
       });
       
-      // Send transaction
-      const tx = await contract.spin(txParams);
-      console.log('📤 Transaction sent:', tx.hash);
+      // Send transaction and wait for confirmation
+      console.log('📤 Broadcasting transaction...');
+      const txHash = await sendTransaction(transactionData);
       
-      // Wait for confirmation
-      const receipt = await tx.wait();
-      console.log('✅ Transaction confirmed:', receipt.hash);
+      if (!txHash) {
+        console.error('❌ Failed to broadcast transaction');
+        setIsSpinning(false);
+        return null;
+      }
+      
+      console.log('📡 Transaction broadcasted:', txHash);
+      
+      // Wait for confirmation to get the actual result
+      console.log('⏳ Waiting for transaction confirmation...');
+      const receipt = await waitForTransactionConfirmation(txHash);
+      
+      if (!receipt) {
+        console.error('❌ No receipt received from transaction');
+        setIsSpinning(false);
+        return null;
+      }
       
       // Parse transaction logs
       console.log('🔍 Parsing transaction logs...');
@@ -341,7 +439,8 @@ export function useBlockchainGame() {
           rarestPending, // New: Poppies Mainnet WL pending
           discountApplied,
           newDiscountGranted,
-          txHash: receipt.hash
+          txHash: receipt.hash,
+          isOptimistic: false
         };
         
         console.log('🎯 Blockchain result:', {
@@ -356,24 +455,37 @@ export function useBlockchainGame() {
         });
         
         // Refresh state in background
-        setTimeout(() => {
           fetchState();
-        }, 2000);
+        
+        // Clear spinning state
+        setIsSpinning(false);
         
         return result;
       } else {
         console.error('❌ No SpinResult event found in transaction logs');
         console.log('📋 All logs:', receipt.logs);
+        setIsSpinning(false);
         return null;
       }
       
     } catch (error: any) {
       console.error('❌ Blockchain spin failed:', error);
       
-      if (error.code === 'INSUFFICIENT_FUNDS') {
+      // Reset to last valid state on error
+      if (lastValidState) {
+        console.log('🔄 Rolling back to last valid state');
+        setFreeSpins(lastValidState.freeSpins);
+        setDiscountedSpins(lastValidState.discountedSpins);
+        setHasDiscount(lastValidState.hasDiscount);
+        setMonBalance(lastValidState.monBalance);
+      }
+      
+      // Clear spinning state
+      setIsSpinning(false);
+      
+      if (error.code === 'INSUFFICIENT_FUNDS' || error.message?.includes('insufficient balance')) {
         console.error('❌ Insufficient MON balance');
         console.log('🚨 Triggering insufficient funds popup');
-        // Show insufficient funds popup instead of just logging
         setInsufficientFundsPopup(true);
       } else if (error.code === 'USER_REJECTED') {
         console.error('❌ Transaction cancelled');
@@ -383,7 +495,7 @@ export function useBlockchainGame() {
       
       return null;
     }
-  }, [contract, signer, provider, freeSpins, hasDiscount, discountedSpins, networkError, fetchState, getDynamicGasSettings, setInsufficientFundsPopup]);
+  }, [contract, signer, provider, freeSpins, hasDiscount, discountedSpins, networkError, fetchState, getDynamicGasSettings, setInsufficientFundsPopup, isSpinning, lastValidState, sendTransaction, waitForTransactionConfirmation]);
 
   return {
     ready,
@@ -398,5 +510,6 @@ export function useBlockchainGame() {
     spin,
     getSpinCost,
     refreshState: fetchState,
+    isSpinning,
   };
 }

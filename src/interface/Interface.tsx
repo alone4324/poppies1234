@@ -40,10 +40,10 @@ const Interface = () => {
       <OnboardingNavigation />
 
       {/* Wallet Widget - Top Right */}
-      <WalletWidget />
+      {/* <WalletWidget /> */}
 
       {/* Help Button */}
-      <HelpButton />
+      {/* <HelpButton /> */}
 
       {/* Modal */}
       {modal && <Modal />}

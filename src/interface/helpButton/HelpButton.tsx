@@ -15,16 +15,43 @@
  */
 
 import useGame from '../../stores/store';
+import { useSoundManager } from '../../hooks/useSoundManager';
 import './style.css';
+import React from 'react';
 
 const HelpButton = () => {
   const { setModal } = useGame();
+  const { playClick } = useSoundManager();
+  const [showHelp, setShowHelp] = React.useState(false);
 
   const handleHelp = () => {
+    playClick();
+    setShowHelp(true);
     setModal(true);
   };
 
-  return <div onClick={handleHelp} className="help-button" />;
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowHelp(false);
+    setModal(false);
+  };
+
+  return (
+    <>
+      <div onClick={handleHelp} className="help-button" />
+      {showHelp && (
+        <div className="help-modal-overlay" onClick={handleClose}>
+          <div className="help-modal" onClick={e => e.stopPropagation()}>
+            <button className="help-modal-close" onClick={handleClose}>&times;</button>
+            <div className="help-modal-content">
+              <h2>Help</h2>
+              <p>Here you can add your help content or instructions for the game.</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default HelpButton;

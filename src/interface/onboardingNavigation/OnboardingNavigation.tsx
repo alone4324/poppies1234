@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import useGame from '../../stores/store';
+import { useSoundManager } from '../../hooks/useSoundManager';
 import './style.css';
 
 interface OnboardingStep {
@@ -20,6 +21,7 @@ const OnboardingNavigation = () => {
   const [hasStartedOnboarding, setHasStartedOnboarding] = useState(false);
   const { authenticated } = usePrivy();
   const { setInsufficientFundsPopup } = useGame();
+  const { playClick } = useSoundManager();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const steps: OnboardingStep[] = [
@@ -127,6 +129,7 @@ const OnboardingNavigation = () => {
   const handleNext = () => {
     if (!canProceed) return; // Prevent proceeding if wallet not connected
     
+    playClick();
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -137,12 +140,14 @@ const OnboardingNavigation = () => {
   };
 
   const handleSkip = () => {
+    playClick();
     // Hide navigation and reset onboarding state
     setIsVisible(false);
     setHasStartedOnboarding(false);
   };
 
   const handleStepAction = () => {
+    playClick();
     const currentStepData = steps[currentStep];
     if (currentStepData.action) {
       currentStepData.action();

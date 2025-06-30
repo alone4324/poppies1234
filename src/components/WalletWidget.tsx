@@ -17,6 +17,7 @@
 import { useState } from 'react';
 import { usePrivy, useLogin, useLogout } from '@privy-io/react-auth';
 import { useBlockchainGame } from '../hooks/useBlockchainGame';
+import { useSoundManager } from '../hooks/useSoundManager';
 import './WalletWidget.css';
 
 const WalletWidget = () => {
@@ -24,7 +25,8 @@ const WalletWidget = () => {
   const { login } = useLogin();
   const { logout } = useLogout();
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const { playClick } = useSoundManager();
+  
   const {
     walletAddress,
     monBalance,
@@ -37,13 +39,29 @@ const WalletWidget = () => {
   } = useBlockchainGame();
 
   const handleRefresh = () => {
+    playClick();
     refreshState();
+  };
+
+  const handleToggleExpand = () => {
+    playClick();
+    setIsExpanded(!isExpanded);
+  };
+
+  const handleLogin = () => {
+    playClick();
+    login();
+  };
+
+  const handleLogout = () => {
+    playClick();
+    logout();
   };
 
   if (!authenticated) {
     return (
       <div className="wallet-widget">
-        <button className="wallet-login-btn" onClick={login}>
+        <button className="wallet-login-btn" onClick={handleLogin}>
           Connect Wallet
         </button>
       </div>
@@ -54,7 +72,7 @@ const WalletWidget = () => {
     <div className="wallet-widget">
       <div 
         className="wallet-header" 
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={handleToggleExpand}
       >
         <div className="wallet-address">
           {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Loading...'}
@@ -86,7 +104,7 @@ const WalletWidget = () => {
             <button className="wallet-refresh-btn" onClick={handleRefresh}>
               🔄 Refresh
             </button>
-            <button className="wallet-logout-btn" onClick={logout}>
+            <button className="wallet-logout-btn" onClick={handleLogout}>
               Disconnect
             </button>
           </div>

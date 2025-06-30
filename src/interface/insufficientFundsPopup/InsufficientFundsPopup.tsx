@@ -14,14 +14,16 @@
  *  https://www.gnu.org/licenses/agpl-3.0.html
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useGame from '../../stores/store';
 import { useBlockchainGame } from '../../hooks/useBlockchainGame';
+import { useSoundManager } from '../../hooks/useSoundManager';
 import './style.css';
 
 const InsufficientFundsPopup = () => {
   const { walletAddress, monBalance, getSpinCost, refreshState } = useBlockchainGame();
   const setInsufficientFundsPopup = useGame((state) => state.setInsufficientFundsPopup);
+  const { playClick, playError, playFunding } = useSoundManager();
   const [copied, setCopied] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -31,6 +33,12 @@ const InsufficientFundsPopup = () => {
     spinCost: getSpinCost()
   });
 
+  // Play error sound when popup appears
+  useEffect(() => {
+    console.log('🔊 Playing error sound for insufficient funds popup');
+    playError();
+  }, []);
+
   const handleCopyAddress = async () => {
     if (walletAddress) {
       try {
@@ -39,12 +47,14 @@ const InsufficientFundsPopup = () => {
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error('Failed to copy address:', err);
+        playError();
       }
     }
   };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
+    playClick();
     try {
       await refreshState();
       
@@ -62,12 +72,19 @@ const InsufficientFundsPopup = () => {
           (spinCost === '0.01 MON' && currentBalance >= 0.01) ||
           (spinCost === '0.1 MON' && currentBalance >= 0.1)) {
         console.log('✅ Sufficient funds detected after refresh, closing popup');
-        setInsufficientFundsPopup(false);
+        playFunding(); // Play funding sound when wallet is funded
+        
+        // Wait for funding sound to complete before closing popup
+        setTimeout(() => {
+          setInsufficientFundsPopup(false);
+        }, 1500); // Increased delay to let funding sound play completely
       } else {
         console.log('❌ Still insufficient funds after refresh');
+        playError();
       }
     } catch (error) {
       console.error('Error refreshing balance:', error);
+      playError();
     } finally {
       setIsRefreshing(false);
     }
@@ -120,7 +137,10 @@ const InsufficientFundsPopup = () => {
             </div>
             <button 
               className={`copy-button ${copied ? 'copied' : ''}`}
-              onClick={handleCopyAddress}
+              onClick={() => {
+                playClick();
+                handleCopyAddress();
+              }}
             >
               {copied ? '✓ Copied!' : '📋 Copy'}
             </button>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .sound-test {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #ff5252;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Sound System Test</h1>
+    
+    <div class="sound-test">
+        <h3>Background Music</h3>
+        <button onclick="testBackgroundMusic()">Play Background Music</button>
+        <button onclick="stopBackgroundMusic()">Stop Background Music</button>
+        <div id="bg-status" class="status"></div>
+    </div>
+
+    <div class="sound-test">
+        <h3>Game Sounds</h3>
+        <button onclick="testSound('click')">Click Sound</button>
+        <button onclick="testSound('spin')">Spin Sound</button>
+        <button onclick="testSound('error')">Error Sound</button>
+        <button onclick="testSound('funding')">Funding Sound</button>
+        <button onclick="testSound('monreward')">MON Reward Sound</button>
+        <button onclick="testSound('bad-luck')">Bad Luck Sound</button>
+        <button onclick="testSound('reel')">Reel Sound</button>
+        <div id="game-status" class="status"></div>
+    </div>
+
+    <div class="sound-test">
+        <h3>Volume Control Test</h3>
+        <button onclick="testVolumeControl()">Test Volume Reduction</button>
+        <div id="volume-status" class="status"></div>
+    </div>
+
+    <script>
+        let backgroundMusic = null;
+        let currentSound = null;
+
+        function testBackgroundMusic() {
+            try {
+                if (!backgroundMusic) {
+                    backgroundMusic = new Audio('/sounds/background-music.mp3');
+                    backgroundMusic.loop = true;
+                    backgroundMusic.volume = 0.3;
+                }
+                backgroundMusic.play();
+                updateStatus('bg-status', 'Background music started', 'success');
+            } catch (error) {
+                updateStatus('bg-status', 'Error: ' + error.message, 'error');
+            }
+        }
+
+        function stopBackgroundMusic() {
+            if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                updateStatus('bg-status', 'Background music stopped', 'success');
+            }
+        }
+
+        function testSound(soundName) {
+            try {
+                if (currentSound) {
+                    currentSound.pause();
+                }
+                currentSound = new Audio(`/sounds/${soundName}.mp3`);
+                currentSound.volume = 0.4;
+                currentSound.play();
+                updateStatus('game-status', `Playing ${soundName} sound`, 'success');
+            } catch (error) {
+                updateStatus('game-status', `Error playing ${soundName}: ${error.message}`, 'error');
+            }
+        }
+
+        function testVolumeControl() {
+            if (backgroundMusic) {
+                updateStatus('volume-status', 'Reducing background volume...', 'success');
+                backgroundMusic.volume = 0.1;
+                
+                setTimeout(() => {
+                    backgroundMusic.volume = 0.3;
+                    updateStatus('volume-status', 'Volume restored to normal', 'success');
+                }, 2000);
+            } else {
+                updateStatus('volume-status', 'Please start background music first', 'error');
+            }
+        }
+
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        // Auto-start background music on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testBackgroundMusic();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

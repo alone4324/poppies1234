@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Outcomes Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #ff5252;
+        }
+        .outcome {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+        .nft-outcome {
+            border-left-color: #ffd700;
+            background: #2a2a2a;
+        }
+        .mon-outcome {
+            border-left-color: #28a745;
+        }
+        .bad-outcome {
+            border-left-color: #dc3545;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+        .info { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🎉 NFT Outcomes & Sound Test</h1>
+    
+    <div class="test-section">
+        <h3>🎵 Sound Test</h3>
+        <button onclick="testWowSound()">Play Wow Sound (NFT)</button>
+        <button onclick="testMonSound()">Play MON Reward Sound</button>
+        <button onclick="testBadLuckSound()">Play Bad Luck Sound</button>
+        <div id="sound-status" class="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎰 Simulated Outcomes</h3>
+        <button onclick="simulateNFTWin()">Simulate Poppies NFT Win</button>
+        <button onclick="simulateWLWin()">Simulate Mainnet WL Win</button>
+        <button onclick="simulateMONWin()">Simulate MON Win</button>
+        <button onclick="simulateNoWin()">Simulate No Win</button>
+        <div id="outcome-display"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📊 NFT Outcome Analysis</h3>
+        <p>Based on the contract logic, NFT outcomes should be:</p>
+        <ul>
+            <li><strong>Poppies NFT:</strong> 10% chance (poppiesNftWon = true)</li>
+            <li><strong>Mainnet WL:</strong> 5% chance (rarestPending = true)</li>
+            <li><strong>Total NFT chance:</strong> 15% (combined)</li>
+        </ul>
+        <p>If you're getting 0 NFT outcomes, it could be:</p>
+        <ul>
+            <li>Low number of spins (need more spins to see 15% chance)</li>
+            <li>Contract not properly configured</li>
+            <li>Random number generation issue</li>
+        </ul>
+        <div id="analysis-status" class="status info">
+            💡 Try spinning 20+ times to see NFT outcomes (15% chance)
+        </div>
+    </div>
+
+    <script>
+        let currentSound = null;
+
+        function testWowSound() {
+            playSound('wow');
+            updateStatus('sound-status', 'Playing wow sound for NFT outcome', 'success');
+        }
+
+        function testMonSound() {
+            playSound('monreward');
+            updateStatus('sound-status', 'Playing MON reward sound', 'success');
+        }
+
+        function testBadLuckSound() {
+            playSound('bad-luck');
+            updateStatus('sound-status', 'Playing bad luck sound', 'success');
+        }
+
+        function playSound(soundName) {
+            try {
+                if (currentSound) {
+                    currentSound.pause();
+                }
+                currentSound = new Audio(`/sounds/${soundName}.mp3`);
+                currentSound.volume = 0.4;
+                currentSound.play();
+            } catch (error) {
+                updateStatus('sound-status', `Error playing ${soundName}: ${error.message}`, 'error');
+            }
+        }
+
+        function simulateNFTWin() {
+            const outcome = {
+                combination: ['cherry', 'cherry', 'cherry'],
+                monReward: '0.45',
+                extraSpins: 2,
+                poppiesNftWon: true,
+                rarestPending: false,
+                txHash: '0x123...abc'
+            };
+            displayOutcome(outcome, 'nft-outcome');
+            testWowSound();
+        }
+
+        function simulateWLWin() {
+            const outcome = {
+                combination: ['apple', 'apple', 'apple'],
+                monReward: '0.27',
+                extraSpins: 3,
+                poppiesNftWon: false,
+                rarestPending: true,
+                txHash: '0x456...def'
+            };
+            displayOutcome(outcome, 'nft-outcome');
+            testWowSound();
+        }
+
+        function simulateMONWin() {
+            const outcome = {
+                combination: ['banana', 'banana', 'lemon'],
+                monReward: '0.18',
+                extraSpins: 1,
+                poppiesNftWon: false,
+                rarestPending: false,
+                txHash: '0x789...ghi'
+            };
+            displayOutcome(outcome, 'mon-outcome');
+            testMonSound();
+        }
+
+        function simulateNoWin() {
+            const outcome = {
+                combination: ['lemon', 'cherry', 'banana'],
+                monReward: '0',
+                extraSpins: 0,
+                poppiesNftWon: false,
+                rarestPending: false,
+                txHash: '0xabc...123'
+            };
+            displayOutcome(outcome, 'bad-outcome');
+            testBadLuckSound();
+        }
+
+        function displayOutcome(outcome, className) {
+            const display = document.getElementById('outcome-display');
+            const outcomeDiv = document.createElement('div');
+            outcomeDiv.className = `outcome ${className}`;
+            
+            let rewardText = '';
+            if (outcome.poppiesNftWon) {
+                rewardText += '🎉 RARE POPPIES NFT WON! 🌸<br>';
+            }
+            if (outcome.rarestPending) {
+                rewardText += '🏆 POPPIES MAINNET WL PENDING! 🎫<br>';
+            }
+            if (parseFloat(outcome.monReward) > 0) {
+                rewardText += `💰 Won: ${outcome.monReward} MON<br>`;
+            }
+            if (outcome.extraSpins > 0) {
+                rewardText += `🎁 Won: ${outcome.extraSpins} Free Spins<br>`;
+            }
+            if (rewardText === '') {
+                rewardText = '😔 No reward this time';
+            }
+
+            outcomeDiv.innerHTML = `
+                <strong>Combination:</strong> ${outcome.combination.join(' | ').toUpperCase()}<br>
+                <strong>Rewards:</strong><br>${rewardText}<br>
+                <strong>TX:</strong> ${outcome.txHash}
+            `;
+            
+            display.appendChild(outcomeDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                outcomeDiv.remove();
+            }, 5000);
+        }
+
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+    </script>
+</body>
+</html> 

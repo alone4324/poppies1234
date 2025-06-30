@@ -1,10 +1,11 @@
 .wallet-widget {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 1000;
+  /* position: fixed; */
+  /* top: 16px; */
+  /* right: 16px; */
+  /* z-index: 1000; */
   font-family: 'Paytone One', sans-serif;
   min-width: 220px;
+  position: relative;
 }
 
 .wallet-login-btn {
@@ -76,6 +77,12 @@
   padding: 16px;
   margin-top: -2px;
   animation: slideDown 0.3s ease;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  min-width: 220px;
+  z-index: 10;
 }
 
 @keyframes slideDown {
@@ -86,6 +93,18 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .wallet-widget {
+    min-width: 160px;
+    font-size: 12px;
+  }
+  .wallet-details {
+    min-width: 160px;
+    font-size: 12px;
+    padding: 10px;
   }
 }
 
