@@ -45,7 +45,7 @@ const HelpButton = () => {
             <button className="help-modal-close" onClick={handleClose}>&times;</button>
             <div className="help-modal-content">
               <h2>Help</h2>
-              <p>Here you can add your help content or instructions for the game.</p>
+              {/* Existing help content goes here. Removed placeholder text. */}
             </div>
           </div>
         </div>
