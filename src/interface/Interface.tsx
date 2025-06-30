@@ -17,9 +17,9 @@
 import useGame from '../stores/store';
 import { useBlockchainGame } from '../hooks/useBlockchainGame';
 import Modal from './modal/Modal';
-import HelpButton from './helpButton/HelpButton';
+// import HelpButton from './helpButton/HelpButton';
 import OutcomePopup from './outcomePopup/OutcomePopup';
-import WalletWidget from '../components/WalletWidget';
+// import WalletWidget from '../components/WalletWidget';
 import InsufficientFundsPopup from './insufficientFundsPopup/InsufficientFundsPopup';
 import OnboardingNavigation from './onboardingNavigation/OnboardingNavigation';
 import './style.css';
