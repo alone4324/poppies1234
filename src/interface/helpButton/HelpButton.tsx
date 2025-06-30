@@ -17,7 +17,6 @@
 import useGame from '../../stores/store';
 import { useSoundManager } from '../../hooks/useSoundManager';
 import './style.css';
-import React from 'react';
 
 const HelpButton = () => {
   const { setModal } = useGame();
