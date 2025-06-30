@@ -22,19 +22,6 @@ import React from 'react';
 const HelpButton = () => {
   const { setModal } = useGame();
   const { playClick } = useSoundManager();
-  const [showHelp, setShowHelp] = React.useState(false);
-
-  const handleHelp = () => {
-    playClick();
-    setShowHelp(true);
-    setModal(true);
-  };
-
-  const handleClose = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowHelp(false);
-    setModal(false);
-  };
 
   return (
     <div onClick={() => { playClick(); setModal(true); }} className="help-button" />
