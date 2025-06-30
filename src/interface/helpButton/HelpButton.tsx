@@ -37,20 +37,7 @@ const HelpButton = () => {
   };
 
   return (
-    <>
-      <div onClick={handleHelp} className="help-button" />
-      {showHelp && (
-        <div className="help-modal-overlay" onClick={handleClose}>
-          <div className="help-modal" onClick={e => e.stopPropagation()}>
-            <button className="help-modal-close" onClick={handleClose}>&times;</button>
-            <div className="help-modal-content">
-              <h2>Help</h2>
-              {/* Existing help content goes here. Removed placeholder text. */}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    <div onClick={() => { playClick(); setModal(true); }} className="help-button" />
   );
 };
 

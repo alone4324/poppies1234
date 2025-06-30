@@ -31,6 +31,7 @@ const Modal = () => {
     <div className="modal" onClick={handleClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="modal-main">
+          <button className="modal-close-btn" onClick={handleClose}>&times;</button>
           <div className="modal-title">🎰 Poppies Slot Machine</div>
           
           <div className="modal-section">
