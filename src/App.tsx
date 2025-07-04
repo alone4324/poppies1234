@@ -50,6 +50,7 @@ const App = () => {
       <Canvas 
         className="slot-machine"
         camera={{ fov: 75, position: [0, 0, cameraPositionZ] }}
+        style={{ background: 'transparent' }}
       >
         <Game />
       </Canvas>

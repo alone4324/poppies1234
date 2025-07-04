@@ -16,12 +16,18 @@
   /* touch-action: none; */
 }
 
-html,
-body,
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: url('/images/casino-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-color: #141417;
+}
+
 #root {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
 }
