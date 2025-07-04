@@ -82,7 +82,6 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   const [gameState, setGameState] = useState<'idle' | 'spinning' | 'waiting-for-popup'>('idle');
 
   const machineRef = useRef<THREE.Group>(null);
-  const [machineAnim, setMachineAnim] = useState(0); // 0 = neutral, 1 = animating
 
   // Main spin function - shows popup immediately with blockchain results
   const spinSlotMachine = async () => {
@@ -200,7 +199,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   }, [gameState, outcomePopup]);
 
   // Animate the whole machine (bounce/tilt) when spinning
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!machineRef.current) return;
     if (gameState === 'spinning') {
       // Bounce/tilt effect: oscillate rotation and position
