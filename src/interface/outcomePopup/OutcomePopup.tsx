@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import useGame from '../../stores/store';
 import { MONAD_TESTNET } from '../../hooks/useBlockchainGame';
 import { useSoundManager } from '../../hooks/useSoundManager';
+import { usePrivy } from '@privy-io/react-auth';
 import './style.css';
 
 interface OutcomePopupProps {
@@ -36,6 +37,7 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const { user } = usePrivy();
 
   const explorerUrl = `${MONAD_TESTNET.blockExplorers.default.url}/tx/${txHash}`;
 
@@ -109,7 +111,7 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
       const res = await fetch('/api/submit-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet, rewardType }),
+        body: JSON.stringify({ wallet, rewardType, userId: user?.id }),
       });
       if (!res.ok) {
         // Try to parse error message from backend

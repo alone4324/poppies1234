@@ -9,16 +9,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { wallet, rewardType } = req.body;
-  if (!wallet || !rewardType) {
-    return res.status(400).json({ error: 'Wallet and rewardType are required' });
+  const { wallet, rewardType, userId } = req.body;
+  if (!wallet || !rewardType || !userId) {
+    return res.status(400).json({ error: 'Wallet, rewardType, and userId are required' });
   }
 
   const { error } = await supabase
     .from('wallet_submissions')
-    .insert([{ wallet, reward_type: rewardType }]);
+    .insert([{ wallet, reward_type: rewardType, user_id: userId }]);
 
   if (error) {
+    if (error.code === '23505' || error.message.includes('duplicate key')) {
+      return res.status(400).json({ error: 'You have already submitted your wallet.' });
+    }
     return res.status(500).json({ error: error.message });
   }
 
