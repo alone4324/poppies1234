@@ -105,15 +105,24 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
     setSubmitting(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3001/api/submit-wallet', {
+      // Use relative path for API endpoint
+      const res = await fetch('/api/submit-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ wallet, rewardType }),
       });
-      if (!res.ok) throw new Error('Failed to submit wallet');
+      if (!res.ok) {
+        // Try to parse error message from backend
+        let msg = 'Failed to submit wallet';
+        try {
+          const data = await res.json();
+          if (data && data.error) msg = data.error;
+        } catch {}
+        throw new Error(msg);
+      }
       setSubmitted(true);
     } catch (e: any) {
-      setError(e.message || 'Submission failed');
+      setError(e.message || 'Submission failed. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -225,9 +234,18 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
                       opacity: submitting ? 0.7 : 1,
                       boxShadow: '0 4px 12px rgba(59, 8, 115, 0.15)',
                       marginBottom: 4,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
                     }}
                   >
-                    {submitting ? 'Submitting...' : 'Submit Wallet'}
+                    {submitting ? (
+                      <>
+                        <span className="spinner" style={{ width: 18, height: 18, border: '2px solid #fff', borderTop: '2px solid #e91e63', borderRadius: '50%', display: 'inline-block', animation: 'spin 1s linear infinite' }} />
+                        Submitting...
+                      </>
+                    ) : 'Submit Wallet'}
                   </button>
                   {error && <div style={{ color: '#e91e63', fontSize: 14 }}>{error}</div>}
                 </form>
@@ -262,3 +280,12 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
 };
 
 export default OutcomePopup;
+
+<style>
+{`
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+`}
+</style>
