@@ -81,6 +81,9 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   // Game state management
   const [gameState, setGameState] = useState<'idle' | 'spinning' | 'waiting-for-popup'>('idle');
 
+  const machineRef = useRef<THREE.Group>(null);
+  const [machineAnim, setMachineAnim] = useState(0); // 0 = neutral, 1 = animating
+
   // Main spin function - shows popup immediately with blockchain results
   const spinSlotMachine = async () => {
     if (!authenticated) {
@@ -196,6 +199,23 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
     }
   }, [gameState, outcomePopup]);
 
+  // Animate the whole machine (bounce/tilt) when spinning
+  useFrame((state, delta) => {
+    if (!machineRef.current) return;
+    if (gameState === 'spinning') {
+      // Bounce/tilt effect: oscillate rotation and position
+      const t = state.clock.getElapsedTime();
+      machineRef.current.rotation.x = Math.sin(t * 8) * 0.08;
+      machineRef.current.rotation.z = Math.sin(t * 4) * 0.04;
+      machineRef.current.position.y = Math.abs(Math.sin(t * 8)) * 0.3;
+    } else {
+      // Return to neutral
+      machineRef.current.rotation.x *= 0.85;
+      machineRef.current.rotation.z *= 0.85;
+      machineRef.current.position.y *= 0.85;
+    }
+  });
+
   useImperativeHandle(ref, () => ({
     reelRefs,
   }));
@@ -226,7 +246,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
   };
 
   return (
-    <>
+    <group ref={machineRef}>
       <Reel
         ref={reelRefs[0]}
         value={value[0]}
@@ -297,7 +317,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
       >
         {getButtonText()}
       </Text>
-    </>
+    </group>
   );
 });
 

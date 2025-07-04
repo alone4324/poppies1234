@@ -14,7 +14,7 @@
  *  https://www.gnu.org/licenses/agpl-3.0.html
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGame from '../../stores/store';
 import { MONAD_TESTNET } from '../../hooks/useBlockchainGame';
 import { useSoundManager } from '../../hooks/useSoundManager';
@@ -32,6 +32,10 @@ interface OutcomePopupProps {
 const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rarestPending, txHash }: OutcomePopupProps) => {
   const { setOutcomePopup } = useGame();
   const { playClick } = useSoundManager();
+  const [wallet, setWallet] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const explorerUrl = `${MONAD_TESTNET.blockExplorers.default.url}/tx/${txHash}`;
 
@@ -96,6 +100,25 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
     setOutcomePopup(null);
   };
 
+  // Handle wallet submission
+  const handleWalletSubmit = async (rewardType: 'genesis-nft' | 'mainnet-wl') => {
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('http://localhost:3001/api/submit-wallet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet, rewardType }),
+      });
+      if (!res.ok) throw new Error('Failed to submit wallet');
+      setSubmitted(true);
+    } catch (e: any) {
+      setError(e.message || 'Submission failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="outcome-popup" onClick={closePopup}>
       <div className="outcome-popup-box" onClick={(e) => e.stopPropagation()}>
@@ -147,11 +170,72 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
             ))}
           </div>
           
-          {/* Special message for WL winners */}
-          {rarestPending && (
-            <div className="outcome-wl-message">
-              <p>🎫 Your wallet address has been recorded for the Poppies Mainnet Whitelist!</p>
-              <p>We'll contact you when the mainnet launch is ready.</p>
+          {/* Wallet submission for rare rewards */}
+          {(poppiesNftWon || rarestPending) && (
+            <div style={{ margin: '32px 0 16px 0', textAlign: 'center' }}>
+              {poppiesNftWon && (
+                <>
+                  <img src="/images/poppies-nft.gif" alt="Poppies Genesis NFT" style={{ width: '100%', maxWidth: 480, borderRadius: 16, marginBottom: 16 }} />
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12 }}>
+                    Submit your wallet to receive Poppies Genesis NFT - NFT will be sent to your wallet
+                  </div>
+                </>
+              )}
+              {rarestPending && !poppiesNftWon && (
+                <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12 }}>
+                  Submit your wallet to receive Poppies Mainnet Whitelist
+                </div>
+              )}
+              {!submitted ? (
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    handleWalletSubmit(poppiesNftWon ? 'genesis-nft' : 'mainnet-wl');
+                  }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
+                >
+                  <input
+                    type="text"
+                    value={wallet}
+                    onChange={e => setWallet(e.target.value)}
+                    placeholder="Enter your wallet address"
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: 16,
+                      padding: '10px 16px',
+                      borderRadius: 8,
+                      border: '2px solid #3b0873',
+                      width: 280,
+                      marginBottom: 8,
+                    }}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting || !wallet}
+                    style={{
+                      fontFamily: 'Paytone One, sans-serif',
+                      fontSize: 16,
+                      background: 'linear-gradient(135deg, #e91e63, #9c27b0)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '10px 24px',
+                      cursor: submitting ? 'not-allowed' : 'pointer',
+                      opacity: submitting ? 0.7 : 1,
+                      boxShadow: '0 4px 12px rgba(59, 8, 115, 0.15)',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Wallet'}
+                  </button>
+                  {error && <div style={{ color: '#e91e63', fontSize: 14 }}>{error}</div>}
+                </form>
+              ) : (
+                <div style={{ color: '#28a745', fontFamily: 'Paytone One, sans-serif', fontSize: 18, marginTop: 8 }}>
+                  Wallet submitted! We will contact you soon.
+                </div>
+              )}
             </div>
           )}
           
