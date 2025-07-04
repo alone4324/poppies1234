@@ -30,7 +30,6 @@ const Interface = () => {
   const insufficientFundsPopup = useGame((state) => state.insufficientFundsPopup);
   const coins = useGame((state) => state.coins);
   const spins = useGame((state) => state.spins);
-  const { setOutcomePopup } = useGame();
   
   // Get blockchain state for display
   const { monBalance, authenticated } = useBlockchainGame();
