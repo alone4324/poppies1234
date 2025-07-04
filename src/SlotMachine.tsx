@@ -198,22 +198,7 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
     }
   }, [gameState, outcomePopup]);
 
-  // Animate the whole machine (bounce/tilt) when spinning
-  useFrame((state) => {
-    if (!machineRef.current) return;
-    if (gameState === 'spinning') {
-      // Bounce/tilt effect: oscillate rotation and position
-      const t = state.clock.getElapsedTime();
-      machineRef.current.rotation.x = Math.sin(t * 8) * 0.08;
-      machineRef.current.rotation.z = Math.sin(t * 4) * 0.04;
-      machineRef.current.position.y = Math.abs(Math.sin(t * 8)) * 0.3;
-    } else {
-      // Return to neutral
-      machineRef.current.rotation.x *= 0.85;
-      machineRef.current.rotation.z *= 0.85;
-      machineRef.current.position.y *= 0.85;
-    }
-  });
+  // No machine bounce/tilt animation. The machine stays still unless user interacts with OrbitControls.
 
   useImperativeHandle(ref, () => ({
     reelRefs,

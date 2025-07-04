@@ -25,6 +25,11 @@
   text-align: center;
   box-shadow: 0 0 20px #ffffff;
   overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+.modal-box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .modal-main {

@@ -59,91 +59,32 @@ const Modal = () => {
           </div>
 
           <div className="modal-section">
-            <div className="modal-subtitle">🎁 NFT Rewards</div>
+            <div className="modal-subtitle">🎁 Rare Prizes</div>
             <div className="modal-text nft-reward">
-              🌸 <span className="highlight">Rare Poppies NFT</span> - 10% chance
+              🌸 <span className="highlight">Rare Poppies NFT</span> - Awarded for rare spins
             </div>
             <div className="modal-text nft-reward">
-              🎫 <span className="highlight">Poppies Mainnet WL</span> - 5% chance
+              🎫 <span className="highlight">Poppies Mainnet WL</span> - Awarded for rare spins
+            </div>
+            <div className="modal-text" style={{ fontSize: '13px', color: '#888', marginTop: 8 }}>
+              (Exact odds and outcomes are not disclosed. Keep spinning for a chance at rare prizes!)
             </div>
           </div>
 
           <div className="modal-section">
             <div className="modal-subtitle">💰 MON Rewards</div>
-            
-            <div className="modal-subsection">
-              <div className="modal-subtitle-small">Triple Matches (1.5% each)</div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/cherry.png" />
-                <img className="modal-image" src="./images/cherry.png" />
-                <img className="modal-image" src="./images/cherry.png" />
-                <span> 0.45 MON + 2 Free Spins </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/apple.png" />
-                <img className="modal-image" src="./images/apple.png" />
-                <img className="modal-image" src="./images/apple.png" />
-                <span> 0.27 MON + 3 Free Spins </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/banana.png" />
-                <img className="modal-image" src="./images/banana.png" />
-                <img className="modal-image" src="./images/banana.png" />
-                <span> 0.18 MON + 10 Discounted Spins </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/lemon.png" />
-                <img className="modal-image" src="./images/lemon.png" />
-                <img className="modal-image" src="./images/lemon.png" />
-                <span> 0.135 MON + 1 Free Spin </span>
-              </div>
+            <div className="modal-text">
+              Match fruits to win MON and free spins. Triple and double matches give bigger rewards!
             </div>
-
-            <div className="modal-subsection">
-              <div className="modal-subtitle-small">Double Matches (5% each)</div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/cherry.png" />
-                <img className="modal-image" src="./images/cherry.png" />
-                <span> 0.18 MON + 1 Free Spin </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/apple.png" />
-                <img className="modal-image" src="./images/apple.png" />
-                <span> 0.135 MON </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/banana.png" />
-                <img className="modal-image" src="./images/banana.png" />
-                <span> 0.09 MON + 2 Free Spins </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/lemon.png" />
-                <img className="modal-image" src="./images/lemon.png" />
-                <span> 0.045 MON + 1 Free Spin </span>
-              </div>
+            <div className="modal-text">
+              Some spins may also grant discounted or free spins as bonuses.
             </div>
+          </div>
 
-            <div className="modal-subsection">
-              <div className="modal-subtitle-small">Single Bonuses</div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/cherry.png" />
-                <span> 0.018 MON (15% chance) </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/apple.png" />
-                <span> 1 Free Spin (10% chance) </span>
-              </div>
-              <div className="modal-text">
-                <img className="modal-image" src="./images/banana.png" />
-                <span> 10 Discounted Spins (8% chance) </span>
-              </div>
-            </div>
-
-            <div className="modal-subsection">
-              <div className="modal-subtitle-small">Consolation Prize</div>
-              <div className="modal-text">
-                <span> 0.009 MON (12% chance) </span>
-              </div>
+          <div className="modal-section">
+            <div className="modal-subtitle">Good Luck!</div>
+            <div className="modal-text">
+              Most spins win something, but not every spin is a winner. Keep spinning and have fun!
             </div>
           </div>
 
@@ -157,39 +98,6 @@ const Modal = () => {
             </div>
             <div className="modal-text">
               • <span className="highlight">15%</span> total NFT chance
-            </div>
-          </div>
-
-          <div className="modal-footer">
-            <div>
-              <a
-                className="modal-text"
-                href="https://michaelkolesidis.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                © Michael Kolesidis
-              </a>
-            </div>
-            <div>
-              <a
-                className="modal-text"
-                href="https://github.com/michaelkolesidis/cherry-charm"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-            </div>
-            <div>
-              <a
-                className="modal-license modal-text"
-                href="https://www.gnu.org/licenses/agpl-3.0.en.html"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Licensed under the GNU AGPL 3.0
-              </a>
             </div>
           </div>
         </div>
