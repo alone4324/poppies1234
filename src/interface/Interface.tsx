@@ -64,12 +64,7 @@ const Interface = () => {
       {insufficientFundsPopup && <InsufficientFundsPopup />}
 
       {/* Logo */}
-      <a
-        href="https://github.com/michaelkolesidis/cherry-charm"
-        target="_blank"
-      >
-        <img className="logo" src="/images/logo.png" alt="" />
-      </a>
+      <img className="logo" src="/images/logo.png" alt="" />
 
       <div className="interface">
         {/* Coins - Show blockchain balance if authenticated, otherwise local coins */}

@@ -6,9 +6,7 @@
 
 ### Author (for attribution)
 
-Michael Kolesidis  
-[michael.kolesidis@gmail.com](michael.kolesidis@gmail.com)  
-[https://michaelkolesidis.com](https://michaelkolesidis.com)
+Poppies Casino Team
 
 ## button.glb
 
@@ -16,6 +14,4 @@ Michael Kolesidis
 
 ### Author (for attribution)
 
-Michael Kolesidis  
-[michael.kolesidis@gmail.com](michael.kolesidis@gmail.com)  
-[https://michaelkolesidis.com](https://michaelkolesidis.com)
+Poppies Casino Team

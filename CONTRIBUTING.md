@@ -19,4 +19,4 @@ All contributors will be added in the designated section in the project's readme
 
 Please contact me for any inquiries :)
 
-[Our Contributor Covenant Code of Conduct](https://github.com/michaelkolesidis/cherry-charm/blob/main/CODE_OF_CONDUCT.md)
+[Our Contributor Covenant Code of Conduct]

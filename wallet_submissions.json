@@ -1,0 +1,20 @@
+[
+  {
+    "wallet": "0x17C2096a82bef9749E007E86C6dbdba397F04DFA",
+    "rewardType": "genesis-nft",
+    "timestamp": "2025-07-02T23:24:45.342Z",
+    "id": "1751498685342"
+  },
+  {
+    "wallet": "0x17C2096a82bef9749E007E86C6dbdba397F04DFA",
+    "rewardType": "mainnet-wl",
+    "timestamp": "2025-07-02T23:25:17.280Z",
+    "id": "1751498717280"
+  },
+  {
+    "wallet": "https://github.com/564tfghf/poppieslg/blob/main/05031-ezgif.com-video-to-gif-converter.gif",
+    "rewardType": "genesis-nft",
+    "timestamp": "2025-07-02T23:31:19.476Z",
+    "id": "1751499079476"
+  }
+]

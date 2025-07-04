@@ -20,18 +20,9 @@
  * @param message - The text to be logged in console
  */
 const devLog = (message: string): void => {
-  // Get the current page URL
-  const url = window.location.href;
-
-  // Check if the URL is the production URL
-  const domain = 'cherry-charm';
-
-  // Only log in console if in development
-  if (url.indexOf(domain) === -1) {
+  // Only log in console if not in production
+  if (process.env.NODE_ENV !== 'production') {
     console.log(message);
-    return;
-  } else {
-    return;
   }
 };
 

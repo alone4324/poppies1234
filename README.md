@@ -1,14 +1,29 @@
-![Poppies Slot Machine Logo](./public/images/logo.png)
+![Poppies Casino Logo](./public/images/logo.png)
 
-**A blockchain-powered 3D slot machine game on Monad Network.**
+**Poppies Casino is a blockchain-powered 3D casino game where users can interact with blockchain and win prizes.**
 
-<a href='https://ko-fi.com/michaelkolesidis' target='_blank'><img src='https://cdn.ko-fi.com/cdn/kofi1.png' style='border:0px;height:45px;' alt='Buy Me a Coffee at ko-fi.com' /></a>
+## About
 
-![Attention! Free Software](./public/images/attention-free-software.png)
+Poppies Casino is a 3D slot machine game where players can spin to win MON tokens, free spins, and exclusive blockchain prizes like NFTs and whitelist spots. The game is fully responsive, features immersive 3D graphics, and integrates with blockchain wallets for real rewards.
 
-This software is free (as in freedom). **If you use any part of this code, you must make your entire project's source code publicly available under the same license.** This applies whether you modify the code or use it as it is in your own project. This ensures that all modifications and derivative works remain free software, so that everyone can benefit. If you are not willing to comply with these terms, you must refrain from using any part of this code.
+## Features
 
-For full license terms and conditions, you can read the AGPL-3.0 at: [gnu.org/licenses/agpl-3.0.html](https://www.gnu.org/licenses/agpl-3.0.html).
+- Blockchain integration for real rewards
+- Wallet connection for seamless play
+- NFT and whitelist prize opportunities
+- Responsive design for desktop and mobile
+- 3D graphics powered by Three.js and React Three Fiber
+- Real-time reward distribution
+- Onboarding and help system for new users
+
+### Game Controls
+
+- Spin: Click the SPIN button or press SPACE
+- Wallet: Connect your wallet to start playing
+
+## License
+
+All rights reserved. Poppies Casino is not affiliated with any previous project or author.
 
 ## Information
 

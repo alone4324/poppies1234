@@ -4,6 +4,4 @@ All images are licenced under [Attribution-NonCommercial 4.0 International (CC B
 
 ### Author (for attribution)
 
-Michael Kolesidis  
-[michael.kolesidis@gmail.com](michael.kolesidis@gmail.com)  
-[https://michaelkolesidis.com](https://michaelkolesidis.com)
+Poppies Casino Team

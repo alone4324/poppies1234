@@ -253,7 +253,7 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
           
           {/* Instructions */}
           <div className="outcome-instructions">
-            Click anywhere outside or press ESC to close and continue spinning
+            <i>Click anywhere outside or press ESC to close and continue spinning</i>
           </div>
         </div>
       </div>

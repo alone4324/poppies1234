@@ -28,76 +28,43 @@ const Modal = () => {
   };
 
   return (
-    <div className="modal" onClick={handleClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+    <div className="modal" onClick={handleClose} tabIndex={0} onKeyDown={e => { if (e.key === 'Escape') handleClose(); }}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
         <div className="modal-main">
-          <button className="modal-close-btn" onClick={handleClose}>&times;</button>
           <div className="modal-title">🎰 Poppies Slot Machine</div>
-          
-          <div className="modal-section">
-            <div className="modal-subtitle">How to Play</div>
-            <div className="modal-text">
-              Click on the SPIN button or press SPACE to spin.
-            </div>
-            <div className="modal-text">
-              Matches are counted from left to right consecutively.
-            </div>
-            <div className="modal-text">Click and drag to rotate the 3D view</div>
-          </div>
 
-          <div className="modal-section">
-            <div className="modal-subtitle">Spin Costs</div>
-            <div className="modal-text">
-              Regular Spin: <span className="highlight">0.1 MON</span>
+          {/* 80% Stat Section */}
+          <div className="modal-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 0 20px 0' }}>
+            <div style={{ fontSize: 52, fontWeight: 800, color: '#e91e63', marginBottom: 8, fontFamily: 'Paytone One, sans-serif', letterSpacing: 1, textShadow: '0 2px 12px #f8e1f2' }}>
+              80%
             </div>
-            <div className="modal-text">
-              Discounted Spin: <span className="highlight">0.01 MON</span> (when available)
+            <div style={{ width: 160, height: 20, background: '#f0e6fa', borderRadius: 12, marginBottom: 14, overflow: 'hidden', boxShadow: '0 2px 8px #e91e6322' }}>
+              <div style={{ width: '80%', height: '100%', background: 'linear-gradient(90deg, #e91e63 0%, #9c27b0 100%)', borderRadius: 12, transition: 'width 0.7s cubic-bezier(.4,2,.6,1)' }}></div>
             </div>
-            <div className="modal-text">
-              Free Spins: <span className="highlight">0 MON</span> (when won)
+            <div style={{ fontSize: 20, color: '#3b0873', fontWeight: 700, fontFamily: 'Inter, sans-serif', marginBottom: 8, textShadow: '0 1px 6px #f8e1f2' }}>
+              of spins get a reward!
+            </div>
+            <div style={{ fontSize: 16, color: '#6913c5', fontFamily: 'Inter, sans-serif', marginBottom: 0, marginTop: 4, maxWidth: 320, textAlign: 'center' }}>
+              Keep spinning for your chance to win <span style={{ color: '#e91e63', fontWeight: 600 }}>rare prizes</span> like a
+              <img src="/images/poppies-nft.gif" alt="Poppies Lottery Ticket NFT" style={{ width: '1.7em', height: '1em', verticalAlign: 'middle', margin: '0 4px', borderRadius: '0.3em', display: 'inline-block', objectFit: 'cover' }} />
+              Poppies Lottery Ticket NFT or <span style={{ fontSize: '1em', verticalAlign: 'middle', margin: '0 2px' }}>🎫</span> Mainnet Whitelist!
             </div>
           </div>
 
-          <div className="modal-section">
-            <div className="modal-subtitle">🎁 Rare Prizes</div>
-            <div className="modal-text nft-reward">
-              🌸 <span className="highlight">Rare Poppies NFT</span> - Awarded for rare spins
-            </div>
-            <div className="modal-text nft-reward">
-              🎫 <span className="highlight">Poppies Mainnet WL</span> - Awarded for rare spins
-            </div>
-            <div className="modal-text" style={{ fontSize: '13px', color: '#888', marginTop: 8 }}>
-              (Exact odds and outcomes are not disclosed. Keep spinning for a chance at rare prizes!)
-            </div>
-          </div>
-
-          <div className="modal-section">
-            <div className="modal-subtitle">💰 MON Rewards</div>
+          {/* How to Play Section */}
+          <div className="modal-section" style={{ border: 'none', marginTop: 0, paddingTop: 0 }}>
+            <div className="modal-subtitle" style={{ marginBottom: 8 }}>How to Play</div>
             <div className="modal-text">
-              Match fruits to win MON and free spins. Triple and double matches give bigger rewards!
+              Click the <span style={{ color: '#e91e63', fontWeight: 600 }}>SPIN</span> button or press <span style={{ color: '#9c27b0', fontWeight: 600 }}>SPACE</span> to spin.
             </div>
             <div className="modal-text">
-              Some spins may also grant discounted or free spins as bonuses.
-            </div>
-          </div>
-
-          <div className="modal-section">
-            <div className="modal-subtitle">Good Luck!</div>
-            <div className="modal-text">
-              Most spins win something, but not every spin is a winner. Keep spinning and have fun!
-            </div>
-          </div>
-
-          <div className="modal-section">
-            <div className="modal-subtitle">📊 Statistics</div>
-            <div className="modal-text">
-              • <span className="highlight">80%</span> of spins give rewards
+              Match fruits to win MON and free spins.
             </div>
             <div className="modal-text">
-              • <span className="highlight">20%</span> of spins give nothing
+              Some spins may grant rare prizes or bonuses.
             </div>
-            <div className="modal-text">
-              • <span className="highlight">15%</span> total NFT chance
+            <div className="modal-text" style={{ color: '#888', fontSize: 14, marginTop: 12 }}>
+              <i>Click anywhere outside this window or press ESC to close.</i>
             </div>
           </div>
         </div>
