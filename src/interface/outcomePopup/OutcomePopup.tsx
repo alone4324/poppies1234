@@ -185,7 +185,14 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
         try {
           const data = await res.json();
           console.log('🧪 API Error response:', data);
-          if (data && data.error) msg = data.error;
+          if (data && data.error) {
+            msg = data.error;
+            // Special handling for "already submitted" case
+            if (msg.includes('already submitted')) {
+              setSubmitted(true);
+              return; // Don't throw error, treat as success
+            }
+          }
         } catch {}
         throw new Error(msg);
       }
@@ -436,6 +443,15 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
                       ? 'Your Poppies Lottery Ticket NFT will be sent to your wallet soon!'
                       : 'Your Poppies Mainnet Whitelist will be processed soon!'
                     }
+                  </div>
+                </div>
+              )}
+
+              {/* Error message for wallet submission */}
+              {error && !submitted && (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ color: '#dc3545', fontSize: '14px', textAlign: 'center' }}>
+                    {error}
                   </div>
                 </div>
               )}
