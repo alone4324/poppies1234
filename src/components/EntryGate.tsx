@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 
-const BRAND_GRADIENT = 'linear-gradient(135deg, #2c1b4e 0%, #3b0873 50%, #6913c5 100%)';
 const ACCENT_COLOR = '#6913c5';
 const ERROR_COLOR = '#e91e63';
 const SUCCESS_COLOR = '#27ae60';
