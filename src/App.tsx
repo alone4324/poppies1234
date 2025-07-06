@@ -7,7 +7,7 @@ import { useSoundManager } from './hooks/useSoundManager';
 import WalletWidget from './components/WalletWidget';
 import HelpButton from './interface/helpButton/HelpButton';
 import EntryGate from './components/EntryGate';
-import useGame from './stores/store';
+
 
 
 
