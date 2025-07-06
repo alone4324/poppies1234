@@ -34,8 +34,7 @@ const App = () => {
   const [windowWidth] = useState(window.innerWidth);
   const cameraPositionZ = windowWidth > 500 ? 30 : 40;
 
-  // Game store
-  const setOutcomePopup = useGame((state) => state.setOutcomePopup);
+
 
   // Sound manager
   const {
