@@ -37,6 +37,7 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const [showShareTwitter, setShowShareTwitter] = useState(true);
   const [showTweetLinkForm, setShowTweetLinkForm] = useState(false);
   const [tweetLink, setTweetLink] = useState('');
@@ -189,8 +190,8 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
             msg = data.error;
             // Special handling for "already submitted" case
             if (msg.includes('already submitted')) {
-              setSubmitted(true);
-              return; // Don't throw error, treat as success
+              setAlreadySubmitted(true);
+              return; // Don't throw error, show specific message
             }
           }
         } catch {}
@@ -447,8 +448,23 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
                 </div>
               )}
 
+              {/* Already submitted message */}
+              {alreadySubmitted && (
+                <div style={{ marginTop: 20 }}>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, color: '#ffc107', fontWeight: 'bold' }}>
+                    ⚠️ You have already submitted your wallet.
+                  </div>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, color: '#6c757d', marginTop: 8 }}>
+                    {poppiesNftWon 
+                      ? 'Your Poppies Lottery Ticket NFT will be sent to your wallet soon!'
+                      : 'Your Poppies Mainnet Whitelist will be processed soon!'
+                    }
+                  </div>
+                </div>
+              )}
+
               {/* Error message for wallet submission */}
-              {error && !submitted && (
+              {error && !submitted && !alreadySubmitted && (
                 <div style={{ marginTop: 12 }}>
                   <div style={{ color: '#dc3545', fontSize: '14px', textAlign: 'center' }}>
                     {error}
