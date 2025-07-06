@@ -16,5 +16,11 @@
     "rewardType": "genesis-nft",
     "timestamp": "2025-07-02T23:31:19.476Z",
     "id": "1751499079476"
+  },
+  {
+    "wallet": "0x281354062fA932086890A6BbF7dfF7d0a67D220F",
+    "rewardType": "mainnet-wl",
+    "timestamp": "2025-07-06T19:00:31.289Z",
+    "id": "1751828431289"
   }
 ]

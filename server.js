@@ -17,9 +17,18 @@ app.use(express.json());
 // File to store wallet submissions
 const WALLET_FILE = 'wallet_submissions.json';
 
+// File to store used codes
+const USED_CODES_FILE = 'codes_used.txt';
+const CODES_FILE = 'codes.txt';
+
 // Initialize wallet file if it doesn't exist
 if (!fs.existsSync(WALLET_FILE)) {
   fs.writeFileSync(WALLET_FILE, JSON.stringify([], null, 2));
+}
+
+// Initialize used codes file if it doesn't exist
+if (!fs.existsSync(USED_CODES_FILE)) {
+  fs.writeFileSync(USED_CODES_FILE, '');
 }
 
 // API endpoint to submit wallet
@@ -64,6 +73,31 @@ app.get('/api/submissions', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to read submissions' });
   }
+});
+
+// API endpoint to validate code
+app.post('/api/validate-code', (req, res) => {
+  const { code } = req.body;
+  if (!code || typeof code !== 'string') {
+    return res.status(400).json({ success: false, error: 'Code is required' });
+  }
+
+  // Read codes and used codes
+  const codes = fs.readFileSync(CODES_FILE, 'utf8').split('\n').map(c => c.trim()).filter(Boolean);
+  const usedCodes = fs.readFileSync(USED_CODES_FILE, 'utf8').split('\n').map(c => c.trim()).filter(Boolean);
+
+  // Check if code is valid and unused
+  if (!codes.includes(code)) {
+    return res.status(401).json({ success: false, error: 'Invalid code' });
+  }
+  if (usedCodes.includes(code)) {
+    return res.status(403).json({ success: false, error: 'Code already used' });
+  }
+
+  // Mark code as used (append to used codes file)
+  fs.appendFileSync(USED_CODES_FILE, code + '\n');
+
+  res.json({ success: true });
 });
 
 app.listen(PORT, () => {
