@@ -34,9 +34,11 @@ if (!fs.existsSync(USED_CODES_FILE)) {
 // API endpoint to submit wallet
 app.post('/api/submit-wallet', (req, res) => {
   try {
-    const { wallet, rewardType } = req.body;
+    console.log('📥 Received wallet submission request:', req.body);
+    const { wallet, rewardType, userId } = req.body;
     
     if (!wallet || !rewardType) {
+      console.log('❌ Missing required fields:', { wallet: !!wallet, rewardType: !!rewardType });
       return res.status(400).json({ error: 'Wallet address and reward type are required' });
     }
 
@@ -47,6 +49,7 @@ app.post('/api/submit-wallet', (req, res) => {
     const newSubmission = {
       wallet,
       rewardType,
+      userId: userId || null, // Include userId if provided
       timestamp: new Date().toISOString(),
       id: Date.now().toString()
     };

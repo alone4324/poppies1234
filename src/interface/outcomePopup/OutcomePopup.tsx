@@ -160,24 +160,41 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   const handleWalletSubmit = async (rewardType: 'genesis-nft' | 'mainnet-wl') => {
     setSubmitting(true);
     setError('');
+    
+    // Debug: Log what we're sending
+    const requestBody = { 
+      wallet, 
+      rewardType, 
+      userId: user?.id 
+    };
+    console.log('🧪 Submitting wallet with data:', requestBody);
+    
     try {
       // Use relative path for API endpoint
       const res = await fetch('/api/submit-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet, rewardType, userId: user?.id }),
+        body: JSON.stringify(requestBody),
       });
+      
+      console.log('🧪 API Response status:', res.status);
+      
       if (!res.ok) {
         // Try to parse error message from backend
         let msg = 'Failed to submit wallet';
         try {
           const data = await res.json();
+          console.log('🧪 API Error response:', data);
           if (data && data.error) msg = data.error;
         } catch {}
         throw new Error(msg);
       }
+      
+      const responseData = await res.json();
+      console.log('🧪 API Success response:', responseData);
       setSubmitted(true);
     } catch (e: any) {
+      console.error('🧪 Wallet submission error:', e);
       setError(e.message || 'Submission failed. Please try again.');
     } finally {
       setSubmitting(false);
