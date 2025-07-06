@@ -7,6 +7,9 @@ import { useSoundManager } from './hooks/useSoundManager';
 import WalletWidget from './components/WalletWidget';
 import HelpButton from './interface/helpButton/HelpButton';
 import EntryGate from './components/EntryGate';
+import useGame from './stores/store';
+
+
 
 const TopRightControls = ({
   isMuted,
@@ -31,6 +34,9 @@ const App = () => {
   const [windowWidth] = useState(window.innerWidth);
   const cameraPositionZ = windowWidth > 500 ? 30 : 40;
 
+  // Game store
+  const setOutcomePopup = useGame((state) => state.setOutcomePopup);
+
   // Sound manager
   const {
     isMuted,
@@ -52,6 +58,8 @@ const App = () => {
       playBackgroundMusic();
     }
   }, [isMuted, isBackgroundPlaying, playBackgroundMusic]);
+
+
 
   let content;
   if (!gatePassed) {

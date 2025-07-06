@@ -37,6 +37,10 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showShareTwitter, setShowShareTwitter] = useState(true);
+  const [showTweetLinkForm, setShowTweetLinkForm] = useState(false);
+  const [tweetLink, setTweetLink] = useState('');
+  const [tweetSubmitted, setTweetSubmitted] = useState(false);
   const { user } = usePrivy();
 
   const explorerUrl = `${MONAD_TESTNET.blockExplorers.default.url}/tx/${txHash}`;
@@ -73,24 +77,24 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   const getRewardText = () => {
     const rewards = [];
     
+    // Prioritize rare rewards - only show these if they exist
     if (poppiesNftWon) {
       rewards.push('🎉 RARE POPPIES NFT WON! 🌸');
-    }
-    
-    if (rarestPending) {
+    } else if (rarestPending) {
       rewards.push('🏆 POPPIES MAINNET WL PENDING! 🎫');
-    }
-    
-    if (parseFloat(monReward) > 0) {
-      rewards.push(`💰 Won: ${monReward} MON`);
-    }
-    
-    if (extraSpins > 0) {
-      rewards.push(`🎁 Won: ${extraSpins} Free Spins`);
-    }
-    
-    if (rewards.length === 0) {
-      rewards.push('😔 No reward this time');
+    } else {
+      // Only show other rewards if no rare rewards were won
+      if (parseFloat(monReward) > 0) {
+        rewards.push(`💰 Won: ${monReward} MON`);
+      }
+      
+      if (extraSpins > 0) {
+        rewards.push(`🎁 Won: ${extraSpins} Free Spins`);
+      }
+      
+      if (rewards.length === 0) {
+        rewards.push('😔 No reward this time');
+      }
     }
     
     return rewards;
@@ -101,6 +105,56 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
     playClick();
     setOutcomePopup(null);
   };
+
+  // Twitter share functions
+  const shareOnTwitter = () => {
+    const tweetText = poppiesNftWon 
+      ? "life's good, god is great 🙌\n\njust won a rare @poppies_xyz NFT by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY"
+      : "life's good, god is great 🙌\n\njust won @poppies_xyz Mainnet WL by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY";
+    
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+    window.open(twitterUrl, '_blank');
+    
+    // Hide share button and show tweet link form
+    setShowShareTwitter(false);
+    setShowTweetLinkForm(true);
+  };
+
+  const validateTweetLink = (link: string) => {
+    const twitterDomains = [
+      'twitter.com',
+      'x.com',
+      'mobile.twitter.com',
+      'm.twitter.com'
+    ];
+    
+    try {
+      const url = new URL(link);
+      return twitterDomains.some(domain => url.hostname.includes(domain));
+    } catch {
+      return false;
+    }
+  };
+
+  const handleTweetLinkSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!tweetLink.trim()) {
+      setError('Please enter a tweet link');
+      return;
+    }
+    
+    if (!validateTweetLink(tweetLink)) {
+      setError('Please enter a valid Twitter/X tweet link');
+      return;
+    }
+    
+    setTweetSubmitted(true);
+    setShowTweetLinkForm(false);
+    setError('');
+  };
+
+
 
   // Handle wallet submission
   const handleWalletSubmit = async (rewardType: 'genesis-nft' | 'mainnet-wl') => {
@@ -143,117 +197,229 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
           </button>
           
           {/* Title */}
-          <div className="outcome-title">🎰 Spin Result</div>
+          <div className="outcome-title">
+            {poppiesNftWon ? '🎉 RARE NFT WIN!' : 
+             rarestPending ? '🏆 MAINNET WL WIN!' : 
+             '🎰 Spin Result'}
+          </div>
           
           {/* Fruit combination - EXACT match with reel display */}
-          <div className="outcome-fruits">
-            {combination.map((fruit, index) => (
-              <img 
-                key={index}
-                className="outcome-fruit-image" 
-                src={getFruitImage(fruit)} 
-                alt={fruit}
-                title={`Reel ${index + 1}: ${fruit.toUpperCase()}`}
-              />
-            ))}
-          </div>
-          
-          {/* Combination text for verification */}
-          <div className="outcome-combination-text">
-            {combination.map(fruit => fruit.toUpperCase()).join(' | ')}
-          </div>
+          {/* Hide fruits for Poppies NFT wins to focus on the rare reward */}
+          {!poppiesNftWon && (
+            <>
+              <div className="outcome-fruits">
+                {combination.map((fruit, index) => (
+                  <img 
+                    key={index}
+                    className="outcome-fruit-image" 
+                    src={getFruitImage(fruit)} 
+                    alt={fruit}
+                    title={`Reel ${index + 1}: ${fruit.toUpperCase()}`}
+                  />
+                ))}
+              </div>
+              
+              {/* Combination text for verification */}
+              <div className="outcome-combination-text">
+                {combination.map(fruit => fruit.toUpperCase()).join(' | ')}
+              </div>
+            </>
+          )}
           
           {/* Rewards */}
-          <div className="outcome-rewards">
-            {getRewardText().map((reward, index) => (
-              <div 
-                key={index} 
-                className={`outcome-reward ${
-                  reward.includes('RARE POPPIES NFT') ? 'poppies-nft' :
-                  reward.includes('MAINNET WL') ? 'mainnet-wl' :
-                  reward.includes('Won:') && reward.includes('MON') ? 'mon-reward' :
-                  reward.includes('Free Spins') ? 'free-spins' :
-                  'no-reward'
-                }`}
-              >
-                {reward}
-              </div>
-            ))}
-          </div>
+          {/* Hide reward text for Poppies NFT wins to focus on the NFT itself */}
+          {!poppiesNftWon && (
+            <div className="outcome-rewards">
+              {getRewardText().map((reward, index) => (
+                <div 
+                  key={index} 
+                  className={`outcome-reward ${
+                    reward.includes('RARE POPPIES NFT') ? 'poppies-nft' :
+                    reward.includes('MAINNET WL') ? 'mainnet-wl' :
+                    reward.includes('Won:') && reward.includes('MON') ? 'mon-reward' :
+                    reward.includes('Free Spins') ? 'free-spins' :
+                    'no-reward'
+                  }`}
+                >
+                  {reward}
+                </div>
+              ))}
+            </div>
+          )}
           
-          {/* Wallet submission for rare rewards */}
+          {/* Rare rewards flow - Twitter share first, then wallet submission */}
           {(poppiesNftWon || rarestPending) && (
-            <div style={{ margin: '32px 0 16px 0', textAlign: 'center' }}>
+            <div style={{ 
+              margin: '32px 0 16px 0', 
+              textAlign: 'center',
+              background: 'linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(156, 39, 176, 0.1))',
+              borderRadius: 16,
+              padding: '24px',
+              border: '2px solid rgba(233, 30, 99, 0.3)',
+              animation: 'rareRewardGlow 2s ease-in-out infinite alternate'
+            }}>
               {poppiesNftWon && (
                 <>
-                  <img src="/images/poppies-nft.gif" alt="Poppies Genesis NFT" style={{ width: '100%', maxWidth: 480, borderRadius: 16, marginBottom: 16 }} />
-                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12 }}>
-                    Submit your wallet to receive Poppies Genesis NFT - NFT will be sent to your wallet
+                  <img src="/images/poppies-nft.gif" alt="Poppies Lottery Ticket NFT" style={{ width: '100%', maxWidth: 480, borderRadius: 16, marginBottom: 16 }} />
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12, fontWeight: 'bold' }}>
+                    🎉 CONGRATULATIONS! 🎉
+                  </div>
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 18, color: '#3b0873', marginBottom: 12 }}>
+                    You won a rare Poppies Lottery Ticket NFT!
                   </div>
                 </>
               )}
               {rarestPending && !poppiesNftWon && (
-                <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12 }}>
-                  Submit your wallet to receive Poppies Mainnet Whitelist
-                </div>
+                <>
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 20, color: '#3b0873', marginBottom: 12, fontWeight: 'bold' }}>
+                    🏆 CONGRATULATIONS! 🏆
+                  </div>
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 18, color: '#3b0873', marginBottom: 12 }}>
+                    You won Poppies Mainnet Whitelist!
+                  </div>
+                </>
               )}
-              {!submitted ? (
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    handleWalletSubmit(poppiesNftWon ? 'genesis-nft' : 'mainnet-wl');
-                  }}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
-                >
-                  <input
-                    type="text"
-                    value={wallet}
-                    onChange={e => setWallet(e.target.value)}
-                    placeholder="Enter your wallet address"
-                    style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: 16,
-                      padding: '10px 16px',
-                      borderRadius: 8,
-                      border: '2px solid #3b0873',
-                      width: 280,
-                      marginBottom: 8,
-                    }}
-                    required
-                  />
+
+              {/* Step 1: Share on Twitter */}
+              {showShareTwitter && (
+                <div style={{ marginTop: 20 }}>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, color: '#3b0873', marginBottom: 16 }}>
+                    Share your achievement on Twitter to claim your reward!
+                  </div>
                   <button
-                    type="submit"
-                    disabled={submitting || !wallet}
+                    onClick={shareOnTwitter}
                     style={{
-                      fontFamily: 'Paytone One, sans-serif',
-                      fontSize: 16,
-                      background: 'linear-gradient(135deg, #e91e63, #9c27b0)',
+                      background: '#1DA1F2',
                       color: 'white',
                       border: 'none',
-                      borderRadius: 8,
-                      padding: '10px 24px',
-                      cursor: submitting ? 'not-allowed' : 'pointer',
-                      opacity: submitting ? 0.7 : 1,
-                      boxShadow: '0 4px 12px rgba(59, 8, 115, 0.15)',
-                      marginBottom: 4,
+                      padding: '12px 24px',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 8,
+                      gap: '8px',
+                      margin: '0 auto'
                     }}
                   >
-                    {submitting ? (
-                      <>
-                        <span className="spinner" style={{ width: 18, height: 18, border: '2px solid #fff', borderTop: '2px solid #e91e63', borderRadius: '50%', display: 'inline-block', animation: 'spin 1s linear infinite' }} />
-                        Submitting...
-                      </>
-                    ) : 'Submit Wallet'}
+                    𝕏 Share on Twitter
                   </button>
-                  {error && <div style={{ color: '#e91e63', fontSize: 14 }}>{error}</div>}
-                </form>
-              ) : (
-                <div style={{ color: '#28a745', fontFamily: 'Paytone One, sans-serif', fontSize: 18, marginTop: 8 }}>
-                  Wallet submitted! We will contact you soon.
+                </div>
+              )}
+
+              {/* Step 2: Submit Tweet Link */}
+              {showTweetLinkForm && (
+                <div style={{ marginTop: 20 }}>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, color: '#3b0873', marginBottom: 16 }}>
+                    Paste your tweet link below to verify your share:
+                  </div>
+                  <form onSubmit={handleTweetLinkSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                    <input
+                      type="text"
+                      value={tweetLink}
+                      onChange={e => setTweetLink(e.target.value)}
+                      placeholder="https://twitter.com/username/status/123456789"
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: 16,
+                        padding: '10px 16px',
+                        borderRadius: 8,
+                        border: '2px solid #3b0873',
+                        width: 280,
+                        marginBottom: 8,
+                      }}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      style={{
+                        background: 'linear-gradient(135deg, #28a745, #20c997)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ✅ Submit Tweet Link
+                    </button>
+                    {error && (
+                      <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '8px' }}>
+                        {error}
+                      </div>
+                    )}
+                  </form>
+                </div>
+              )}
+
+                            {/* Step 3: Wallet Submission (after tweet verification) */}
+              {tweetSubmitted && !submitted && (
+                <div style={{ marginTop: 20 }}>
+                  <div style={{ fontFamily: 'Paytone One, sans-serif', fontSize: 16, color: '#3b0873', marginBottom: 12 }}>
+                    {poppiesNftWon 
+                      ? 'Submit your wallet to receive Poppies Lottery Ticket NFT - NFT will be sent to your wallet'
+                      : 'Submit your wallet to receive Poppies Mainnet Whitelist'
+                    }
+                  </div>
+                  <form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      handleWalletSubmit(poppiesNftWon ? 'genesis-nft' : 'mainnet-wl');
+                    }}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}
+                  >
+                    <input
+                      type="text"
+                      value={wallet}
+                      onChange={e => setWallet(e.target.value)}
+                      placeholder="Enter your wallet address"
+                      style={{
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: 16,
+                        padding: '10px 16px',
+                        borderRadius: 8,
+                        border: '2px solid #3b0873',
+                        width: 280,
+                        marginBottom: 8,
+                      }}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      style={{
+                        background: submitting ? '#6c757d' : 'linear-gradient(135deg, #e91e63, #9c27b0)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        cursor: submitting ? 'not-allowed' : 'pointer',
+                        opacity: submitting ? 0.7 : 1
+                      }}
+                    >
+                      {submitting ? 'Submitting...' : 'Submit Wallet'}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {/* Success message after wallet submission */}
+              {submitted && (
+                <div style={{ marginTop: 20 }}>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, color: '#28a745', fontWeight: 'bold' }}>
+                    ✅ Wallet submitted successfully!
+                  </div>
+                  <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, color: '#6c757d', marginTop: 8 }}>
+                    {poppiesNftWon 
+                      ? 'Your Poppies Lottery Ticket NFT will be sent to your wallet soon!'
+                      : 'Your Poppies Mainnet Whitelist will be processed soon!'
+                    }
+                  </div>
                 </div>
               )}
             </div>

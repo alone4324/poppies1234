@@ -131,12 +131,13 @@ const SlotMachine = forwardRef(({ value }: SlotMachineProps, ref) => {
       stopReel();
       
       // Play outcome sound IMMEDIATELY when we get the result
-      if (Number(blockchainResult.monReward) > 0) {
+      // Prioritize rare reward sounds over MON/spin rewards
+      if (blockchainResult.poppiesNftWon || blockchainResult.rarestPending) {
+        console.log('🎉 Playing wow sound for rare reward immediately');
+        playWow();
+      } else if (Number(blockchainResult.monReward) > 0) {
         console.log('💰 Playing MON reward sound immediately');
         playMonReward();
-      } else if (blockchainResult.poppiesNftWon || blockchainResult.rarestPending) {
-        console.log('🎉 Playing wow sound for NFT outcome immediately');
-        playWow();
       } else {
         console.log('😔 Playing bad luck sound immediately');
         playBadLuck();
