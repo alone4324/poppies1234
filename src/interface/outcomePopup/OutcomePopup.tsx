@@ -110,8 +110,8 @@ const OutcomePopup = ({ combination, monReward, extraSpins, poppiesNftWon, rares
   // Twitter share functions
   const shareOnTwitter = () => {
     const tweetText = poppiesNftWon 
-      ? "life's good, god is great 🙌\n\njust won a rare @poppies_xyz NFT by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY"
-      : "life's good, god is great 🙌\n\njust won @poppies_xyz Mainnet WL by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY";
+      ? "life's good, god is great 🙌\n\njust won a rare @poppiesxyz NFT by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY"
+      : "life's good, god is great 🙌\n\njust won @poppiesxyz Mainnet WL by spinning a slot machine with monad testnet tokens\n\nnever thought it'd be this easy lol\n\nyou gotta try it here: https://gamble.poppiesnft.xyz/\n\nIPY";
     
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(twitterUrl, '_blank');
