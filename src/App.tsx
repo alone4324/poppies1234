@@ -26,9 +26,7 @@ const TopRightControls = ({
 );
 
 const App = () => {
-  const [gatePassed, setGatePassed] = React.useState(() =>
-    typeof window !== 'undefined' && localStorage.getItem('entryGatePassed') === '1'
-  );
+  const [gatePassed, setGatePassed] = React.useState(true); // Always bypass gate
   const [appLoading, setAppLoading] = React.useState(false);
   const [appReady, setAppReady] = React.useState(false);
   const [windowWidth] = useState(window.innerWidth);
