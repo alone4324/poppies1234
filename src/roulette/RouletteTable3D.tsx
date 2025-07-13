@@ -94,6 +94,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
             color="#2d5016" 
             roughness={0.7}
             metalness={0.2
+            }
           />
         </mesh>
         
@@ -162,6 +163,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
                   color={color} 
                   roughness={0.7}
                   metalness={0.2
+                  }
                 />
               </mesh>
               
@@ -200,6 +202,8 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
             </group>
           );
         })
+        )
+      )
       )}
 
       {/* Outside bets section */}
@@ -224,6 +228,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
               color="#8B0000" 
               roughness={0.7}
               metalness={0.2
+              }
             />
           </mesh>
           <Text
@@ -277,6 +282,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
               color="#1a1a1a" 
               roughness={0.7}
               metalness={0.2
+              }
             />
           </mesh>
           <Text
@@ -330,6 +336,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
               color="#333333" 
               roughness={0.7}
               metalness={0.2
+              }
             />
           </mesh>
           <Text
@@ -383,6 +390,7 @@ const RouletteTable3D = ({ selectedBets, onBetClick, isSpinning }: RouletteTable
               color="#333333" 
               roughness={0.7}
               metalness={0.2
+              }
             />
           </mesh>
           <Text

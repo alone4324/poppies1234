@@ -218,6 +218,7 @@ const RouletteWheel3D = ({ isSpinning, targetNumber, onSpinComplete }: RouletteW
           color="#FFD700" 
           roughness={0.2}
           metalness={0.8
+          }
         />
       </mesh>
       
@@ -239,6 +240,7 @@ const RouletteWheel3D = ({ isSpinning, targetNumber, onSpinComplete }: RouletteW
           color="#8B4513" 
           roughness={0.8}
           metalness={0.1
+          }
         />
       </mesh>
       
