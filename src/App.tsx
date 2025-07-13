@@ -32,7 +32,7 @@ const App = () => {
   const [appLoading, setAppLoading] = React.useState(false);
   const [appReady, setAppReady] = React.useState(false);
   const [windowWidth] = useState(window.innerWidth);
-  const cameraPositionZ = windowWidth > 500 ? 30 : 40;
+  const cameraPositionZ = windowWidth > 500 ? 50 : 60; // Increased to accommodate both games
 
 
 

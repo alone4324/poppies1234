@@ -64,7 +64,7 @@ const Interface = () => {
       {insufficientFundsPopup && <InsufficientFundsPopup />}
 
       {/* Logo */}
-      <img className="logo" src="/images/logo.png" alt="" />
+      <img className="logo" src="/images/logo.png" alt="" style={{ top: '10px', left: '50%', transform: 'translateX(-50%)', position: 'fixed' }} />
 
       <div className="interface">
         {/* Coins - Show blockchain balance if authenticated, otherwise local coins */}

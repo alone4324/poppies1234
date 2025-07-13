@@ -10,8 +10,9 @@
   width: min(300px, 25vw);
   transform: rotate(-5deg);
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-5deg);
   margin: 0.5em;
   cursor: pointer;
   z-index: 1;
